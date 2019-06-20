@@ -3,7 +3,7 @@ const app		      = express();
 
 require('dotenv/config');
 
-const port 		    = process.env.PORT;
+const port 		    = process.env.PORT || 3000;
 const bodyParser  = require('body-parser');
 const routes 	    = require('./routes');
 var cors 		      = require('cors');
@@ -12,14 +12,14 @@ var cors 		      = require('cors');
 var whitelist = ['http://192.168.100.78', 'http://192.168.100.24', 'http://localhost:3000']
 var corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) { //!origin for access on local
-      callback(null, true)
+    if (whitelist.indexOf(origin) !== -1 ) { 
     } else {
       callback(new Error('Not allowed by CORS'))
     }
   }
 }
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(
 	bodyParser.urlencoded({

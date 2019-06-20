@@ -3,73 +3,41 @@
 const response 	= require('./response');
 const connection= require('./connect');
 
-exports.notes = function(req, res){
+exports.getNotes = function(req, res){
 
-	let title 	= req.query.search;
-	let sort 	= req.query.sort;
+	let title 	= req.query.search || '';
+	let sort 	= req.query.sort || 'ASC';
 
-	if(!title) {
-		connection.query(
-			`Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id`,
-			function(error, rows, field){
-				if(error){
-					throw error;
-				}else{
+	if(title || sort){
+		var query 	=  `Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort}`
+	}else{
+		var query 	= `Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id`
+	}
+
+	connection.query(
+		query,
+		function(error, rows, field){
+			if(error){
+				throw error;
+			}else{
+				if(rows!=''){
 					return res.send({
 						data:rows,
 					})
+				}else{
+					return res.send({
+						message:'Data not found',
+					})
 				}
 			}
-		)
-
-	} else {
-		if(!sort || sort=='ASC' || sort=='asc'){
-			connection.query(
-				`Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id WHERE note.title LIKE ? ORDER BY note.title ASC`,
-				["%"+title+"%",],
-				function(error, rows, field){
-					if(error){
-						throw error;
-					}else{
-						if(rows != ""){
-							return res.send({
-								data:rows,
-							})	
-						}else{
-							return res.send({
-								message:"Title "+title+" not found."
-							})
-						}
-					}
-				}
-			)
-		}else{
-			connection.query(
-				`Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id WHERE note.title LIKE ? ORDER BY note.title DESC`,
-				["%"+title+"%",],
-				function(error, rows, field){
-					if(error){
-						throw error;
-					}else{
-						if(rows != ""){
-							return res.send({
-								data:rows,
-							})	
-						}else{
-							return res.send({
-								message:"Title "+title+" not found."
-							})
-						}
-					}
-				}
-			)
 		}
-	}
+	)
 }
 
 
 
 exports.createNotes = function(req, res){
+
 	let title 		= req.body.title;
 	let note 		= req.body.note;
 	let category	= req.body.category;
@@ -99,7 +67,10 @@ exports.createNotes = function(req, res){
 	}
 }
 
+
+
 exports.updateNotes = function(req, res, next){
+
 	let title 		= req.body.title;
 	let note 		= req.body.note;
 	let category	= req.body.category;
@@ -141,7 +112,10 @@ exports.updateNotes = function(req, res, next){
 	)
 }
 
+
+
 exports.deleteNotes = function(req, res, next){
+
 	let id = req.params.id;
 
 	connection.query(
@@ -162,6 +136,7 @@ exports.deleteNotes = function(req, res, next){
 		}
 	)
 }
+
 
 
 exports.notesById = function(req, res) {
@@ -188,6 +163,7 @@ exports.notesById = function(req, res) {
 		}
 	)
 }
+
 
 
 exports.searchByTitle = function(req, res, next){
@@ -219,8 +195,10 @@ exports.searchByTitle = function(req, res, next){
 
 
 
+
+
 // CATRGORY
-exports.category = function(req, res){
+exports.getCategory = function(req, res){
 	connection.query(
 		`Select *  From category`,
 		function(error, rows, field){
@@ -236,7 +214,10 @@ exports.category = function(req, res){
 	)
 }
 
+
+
 exports.createCategory 	= function(req, res){
+
 	let category		= req.body.category;
 
 	if(!category){
@@ -260,7 +241,10 @@ exports.createCategory 	= function(req, res){
 	}
 }
 
+
+
 exports.updateCategory 	= function(req, res, next){
+
 	let category		= req.body.category;
 	let id 				= req.params.id;
 
@@ -297,7 +281,10 @@ exports.updateCategory 	= function(req, res, next){
 	)
 }
 
+
+
 exports.deleteCategory = function(req, res, next){
+
 	let id = req.params.id;
 
 	connection.query(
@@ -321,7 +308,9 @@ exports.deleteCategory = function(req, res, next){
 }
 
 
+
 exports.findCategory = function(req, res, next){
+
 	let id = req.params.id;
 
 	connection.query(
@@ -344,5 +333,3 @@ exports.findCategory = function(req, res, next){
 		}
 	)
 }
-
-

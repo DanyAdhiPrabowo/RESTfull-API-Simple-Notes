@@ -5,9 +5,9 @@ module.exports = function(app){
 
 	// ROUTES NOTES
 	// GET
-	// app.get('/notes', controller.searchByTitle);
-	app.get('/notes', controller.notes);
+	app.get('/notes', controller.getNotes);
 	app.get('/notes/:id', controller.notesById);
+
 	// POST
 	app.post('/notes', controller.createNotes);
 	// PATCH
@@ -18,7 +18,7 @@ module.exports = function(app){
 
 	// ROUTES CATEGORIES
 	// GET
-	app.get('/category', controller.category);
+	app.get('/category', controller.getCategory);
 	app.get('/category/:id', controller.findCategory);
 	// POST
 	app.post('/category', controller.createCategory);
