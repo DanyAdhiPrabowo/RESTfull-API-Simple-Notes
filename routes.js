@@ -1,30 +1,35 @@
 'use strict'
 
 module.exports = function(app){
-	const controller = require('./controller');
+	const note 		= require('./controller/note');
+	const category 	= require('./controller/category');
 
-	// ROUTES NOTES
+
+	//=============NOTE================//
+
 	// GET
-	app.get('/notes', controller.getNotes);
-	app.get('/notes/:id', controller.notesById);
-
+	app.get('/notes', note.getNotes);
+	app.get('/notes/:id', note.noteById);
 	// POST
-	app.post('/notes', controller.createNotes);
+	app.post('/notes', note.createNote);
 	// PATCH
-	app.patch('/notes/:id', controller.updateNotes);
+	app.patch('/notes/:id', note.updateNote);
 	// DELETE
-	app.delete('/notes/:id', controller.deleteNotes);
+	app.delete('/notes/:id', note.deleteNote);
 
+
+
+	//=============CATEGORY================//
 
 	// ROUTES CATEGORIES
 	// GET
-	app.get('/category', controller.getCategory);
-	app.get('/category/:id', controller.findCategory);
+	app.get('/category', category.getCategories);
+	app.get('/category/:id', category.categoryById);
 	// POST
-	app.post('/category', controller.createCategory);
+	app.post('/category', category.createCategory);
 	// PATCH
-	app.patch('/category/:id', controller.updateCategory);
+	app.patch('/category/:id', category.updateCategory);
 	// DELETE
-	app.delete('/category/:id', controller.deleteCategory);
+	app.delete('/category/:id', category.deleteCategory);
 
 }

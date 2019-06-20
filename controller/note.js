@@ -1,7 +1,8 @@
 'use strict'
 
-const response 	= require('./response');
-const connection= require('./connect');
+const response 	= require('../response');
+const connection= require('../connect');
+
 
 exports.getNotes = function(req, res){
 
@@ -36,7 +37,7 @@ exports.getNotes = function(req, res){
 
 
 
-exports.createNotes = function(req, res){
+exports.createNote = function(req, res){
 
 	let title 		= req.body.title;
 	let note 		= req.body.note;
@@ -69,7 +70,7 @@ exports.createNotes = function(req, res){
 
 
 
-exports.updateNotes = function(req, res, next){
+exports.updateNote = function(req, res, next){
 
 	let title 		= req.body.title;
 	let note 		= req.body.note;
@@ -114,7 +115,7 @@ exports.updateNotes = function(req, res, next){
 
 
 
-exports.deleteNotes = function(req, res, next){
+exports.deleteNote = function(req, res, next){
 
 	let id = req.params.id;
 
@@ -139,7 +140,7 @@ exports.deleteNotes = function(req, res, next){
 
 
 
-exports.notesById = function(req, res) {
+exports.noteById = function(req, res) {
 	
 	let id = req.params.id;
 
@@ -173,149 +174,6 @@ exports.searchByTitle = function(req, res, next){
 	connection.query(
 		`Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id WHERE note.title LIKE ?`,
 		[title],
-		function(error, rows, field){
-			if(error){
-				throw error;
-			}else{
-				if(rows != ""){
-					return res.send({
-						data:rows,
-					})	
-				}else{
-					return res.send({
-						message:"Data not found."
-					})
-				}
-			}
-		}
-	)
-}
-
-
-
-
-
-
-
-// CATRGORY
-exports.getCategory = function(req, res){
-	connection.query(
-		`Select *  From category`,
-		function(error, rows, field){
-			if(error){
-				throw error;
-			}else{
-				return res.send({
-					error:false,
-					data:rows,
-				})
-			}
-		}
-	)
-}
-
-
-
-exports.createCategory 	= function(req, res){
-
-	let category		= req.body.category;
-
-	if(!category){
-		res.status(400).send('Category is require');
-	}else{
-		connection.query(
-			`Insert into category set category=?`,
-			[title, note, category],
-			function(error, rows, field){
-				if(error){
-					throw error;
-				}else{
-					return res.send({
-						error:false,
-						data: rows,
-						message: "Data has been saved"
-					})
-				}
-			}
-		)
-	}
-}
-
-
-
-exports.updateCategory 	= function(req, res, next){
-
-	let category		= req.body.category;
-	let id 				= req.params.id;
-
-
-	connection.query(
-		`select * from category where id=?`,[id],
-		function(error, rows, field){
-			if(error){
-				throw error;
-			}else{
-				if(rows != ""){
-					if(!category){
-						res.status(400).send({message:'Category is require'});
-					}else{
-						connection.query(
-							`Update category set category=? where id=?`,
-							[title, note, category, id],
-							function(error, rowss, field){
-								if(error){
-									throw error;
-								}else{
-									return res.send({
-										message: 'Data has been change'
-									})
-								}
-							}
-						)
-					}
-				}else{
-					res.status(400).send({message:'Id not valid.'})
-				}
-			}
-		}
-	)
-}
-
-
-
-exports.deleteCategory = function(req, res, next){
-
-	let id = req.params.id;
-
-	connection.query(
-		`Delete from category where id=?`,
-		[id],
-		function(error, rows, field){
-			if(error){
-				throw error;
-			}else{
-				if(rows.affectedRows != ""){
-					return res.send({
-						data:rows,
-						message:'Data has been delete'
-					})
-				}else{
-					return res.status(400).send({message:"Id not valid."})
-				}
-			}
-		}
-	)
-}
-
-
-
-exports.findCategory = function(req, res, next){
-
-	let id = req.params.id;
-
-	connection.query(
-		`Select *  From category where id=?`,
-		[id],
 		function(error, rows, field){
 			if(error){
 				throw error;
