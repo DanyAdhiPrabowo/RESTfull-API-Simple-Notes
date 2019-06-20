@@ -13,14 +13,14 @@
 </div>
 
 
-### Installing
-At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+## Introduction
+Here I make a simple Notes with RESTfull API, here I Use node.js, expres js, and mysql 
 
 ### Configuration Environment Variables
 * Make .env file on this project
 * Open .env file and copy paste this code below
 ``` bash
-PORT=3000
+PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=
