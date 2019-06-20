@@ -6,31 +6,48 @@ const connection= require('../connect');
 
 exports.getNotes = function(req, res){
 
-	let title 	= req.query.search || '';
-	let sort 	= req.query.sort || 'ASC';
+	let title 		= req.query.search || '';
+	let sort 		= req.query.sort || 'DESC';
+	let page 		= req.query.page;
+	let limit 		= req.query.limit || 2;
+	let offset 		= ((page - 1)*limit ) || 0;
 
-	if(title || sort){
-		var query 	=  `Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort}`
-	}else{
-		var query 	= `Select note.idNote, note.title, note.note, note.time, category.category  From note left join category on note.category=category.id`
-	}
-
+	var query 	=  `SELECT note.idNote, note.title, note.note, note.time, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort} LIMIT ${
+			limit} OFFSET ${offset}`;
+	
 	connection.query(
-		query,
-		function(error, rows, field){
+		`SELECT count(*) as total from note where title  LIKE '%${title}%' `,function(error, rows){
 			if(error){
 				throw error;
 			}else{
-				if(rows!=''){
-					return res.send({
-						data:rows,
-					})
-				}else{
-					return res.send({
-						message:'Data not found',
-					})
-				}
+
+				let total 		= rows[0].total;
+				let totalPage 	= Math.ceil(total/limit);
+				
+				connection.query(
+					query,
+					function(error, rows, field){
+						if(error){
+							throw error;
+						}else{
+							if(rows!=''){
+								return res.send({
+									data:rows,
+									total:total,
+									page:page,
+									totalPage:totalPage,
+									limit:limit,
+								})
+							}else{
+								return res.send({
+									message:'Data not found',
+								})
+							}
+						}
+					}
+				)
 			}
+
 		}
 	)
 }
