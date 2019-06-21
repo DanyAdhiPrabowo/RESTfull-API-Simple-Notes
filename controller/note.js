@@ -8,11 +8,11 @@ exports.getNotes = function(req, res){
 
 	let title 		= req.query.search || '';
 	let sort 		= req.query.sort || 'DESC';
-	let page 		= req.query.page;
-	let limit 		= req.query.limit || 2;
+	let page 		= req.query.page || 1;
+	let limit 		= req.query.limit || 10;
 	let offset 		= ((page - 1)*limit ) || 0;
 
-	var query 	=  `SELECT note.idNote, note.title, note.note, note.time, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort} LIMIT ${
+	var query 	=  `SELECT note.title, note.note, note.time, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort} LIMIT ${
 			limit} OFFSET ${offset}`;
 	
 	connection.query(
@@ -61,7 +61,7 @@ exports.createNote = function(req, res){
 	let category	= req.body.category;
 
 	if(!title){
-		res.status(400).send('Name is require');
+		res.status(400).send('Title is require');
 	}else if(!note){
 		res.status(400).send('Note is require');
 	}else if(!category){
