@@ -14,7 +14,7 @@
 
 
 ## Introduction
-Here I make a simple Notes with RESTfull API, here I Use node.js, expres js, and mysql 
+This is a simple Notes with RESTfull API, here I Use node.js, expres js, and mysql 
 
 ### Configuration Environment Variables
 * Make .env file on this project
