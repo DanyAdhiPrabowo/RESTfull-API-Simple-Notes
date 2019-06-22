@@ -24,14 +24,14 @@ exports.getCategories = function(req, res){
 
 exports.createCategory 	= function(req, res){
 
-	let category		= req.body.category;
+	const category		= req.body.category;
 
 	if(!category){
 		res.status(400).send('Category is require');
 	}else{
 		connection.query(
 			`Insert into category set category=?`,
-			[title, note, category],
+			[category],
 			function(error, rows, field){
 				if(error){
 					throw error;
@@ -51,8 +51,8 @@ exports.createCategory 	= function(req, res){
 
 exports.updateCategory 	= function(req, res, next){
 
-	let category		= req.body.category;
-	let id 				= req.params.id;
+	const category		= req.body.category;
+	const id 			= req.params.id;
 
 
 	connection.query(
@@ -66,8 +66,8 @@ exports.updateCategory 	= function(req, res, next){
 						res.status(400).send({message:'Category is require'});
 					}else{
 						connection.query(
-							`Update category set category=? where id=?`,
-							[title, note, category, id],
+							`Update category set category=? where id=? `,
+							[category, id],
 							function(error, rowss, field){
 								if(error){
 									throw error;
@@ -91,7 +91,7 @@ exports.updateCategory 	= function(req, res, next){
 
 exports.deleteCategory = function(req, res, next){
 
-	let id = req.params.id;
+	const id = req.params.id;
 
 	connection.query(
 		`Delete from category where id=?`,
@@ -117,7 +117,7 @@ exports.deleteCategory = function(req, res, next){
 
 exports.categoryById = function(req, res, next){
 
-	let id = req.params.id;
+	const id = req.params.id;
 
 	connection.query(
 		`Select *  From category where id=?`,
