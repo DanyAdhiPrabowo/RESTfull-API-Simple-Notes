@@ -14,7 +14,11 @@
 
 
 ## Introduction
-This is a simple Notes with RESTfull API, here I Use node.js, expres js, and mysql 
+This is a backend simple Notes with RESTfull API, here I Use node.js, expres js, and mysql 
+
+## Prerequiste
+- Node.js - Download and Install [Node.js](https://nodejs.org/en/)
+- MySQL - Download and Install [MySQL](https://www.mysql.com/downloads/) - Make sure it's running on the default port.  
 
 ### Configuration Environment Variables
 * Make .env file on this project
@@ -28,6 +32,19 @@ DB=a_note
 NODE_ENV=development node server.js
 ```
 
+## Installation
+### Clone
+```
+$ git clone https://github.com/tatasfachrul/simple-REST
+$ cd simple-REST
+$ npm install
+```
+
+### Start Development Server
+```
+$ npm start
+```
+
 ## Built With
 
 * [NodeJS](https://nodejs.org/en/docs/)
@@ -36,4 +53,3 @@ NODE_ENV=development node server.js
 * [BodyParser](https://www.npmjs.com/package/body-parser)
 * [dotenv](https://www.npmjs.com/package/dotenv)
 * [MySQL](https://expressjs.com/en/guide/database-integration.html#mysql)
-* [Lodash](https://lodash.com/)
