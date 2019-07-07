@@ -11,9 +11,9 @@ exports.getNotes = function(req, res){
 	const page 			= parseInt(req.query.page || 1);
 	const limit 		= parseInt(req.query.limit || 10);
 	const offset 		= ((page - 1)*limit ) || 0;
+	const idCategory	= req.query.category || ''
 
-	const query 		=  `SELECT note.title, note.note, note.time, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.title LIKE '%${title}%' ORDER BY note.time ${sort} LIMIT ${
-			limit} OFFSET ${offset}`;
+	const query 		=  `SELECT note.idNote, note.title, note.note, note.time, note.category as idCategory, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.title LIKE '%${title}%'  ORDER BY note.time ${sort} LIMIT ${limit} OFFSET ${offset}`;
 	
 	connection.query(
 		`SELECT count(*) as total from note where title  LIKE '%${title}%' `,function(error, rows){
@@ -74,11 +74,18 @@ exports.createNote = function(req, res){
 				if(error){
 					throw error;
 				}else{
-					return res.send({
-						error 	: false,
-						data 	: rows,
-						message	: "Data has been saved"
-					})
+					connection.query(
+						`SELECT note.idNote, note.title, note.note, note.time, note.category as idCategory, category.category  FROM note LEFT JOIN category ON note.category=category.id ORDER BY note.time DESC LIMIT 1`, function(error, rows, field){
+							if(error){
+								console.log(error);
+							}else{
+								return res.send({
+									data 	: rows,
+									message : "Data has been saved"
+								})
+							}
+						}
+					)
 				}
 			}
 		)
@@ -111,13 +118,24 @@ exports.updateNote = function(req, res, next){
 						connection.query(
 							`Update note set title=?, note=?, category=? where idNote=?`,
 							[title, note, category, id],
-							function(error, rowss, field){
+							function(error, rows, field){
 								if(error){
 									throw error;
 								}else{
-									return res.send({
-										message : 'Data has been updated'
-									})
+									connection.query(
+										`SELECT note.idNote, note.title, note.note, note.time, note.category as idCategory, category.category  FROM note LEFT JOIN category ON note.category=category.id ORDER BY note.time DESC LIMIT 1`,
+										function(error, rows, field){
+											if(error){
+												console.log(error);
+											}else{
+												return res.send({
+													data 	: rows,
+													message : 'Data has been updated'
+												})
+
+											}
+										}
+									)
 								}
 							}
 						)
@@ -145,10 +163,13 @@ exports.deleteNote = function(req, res, next){
 			}else{
 				if(rows.affectedRows != ""){
 					return res.send({
-						message :'Data has been delete'
+						message :'Data has been delete',
+						data 	: id
 					})
 				}else{
-					return res.status(400).send ({ message : "Id not valid."})
+					return res.status(400).send ({ 
+						message : "Id not valid.",
+					})
 				}
 			}
 		}
@@ -174,7 +195,7 @@ exports.noteById = function(req, res) {
 					})	
 				} else {
 					return res.send ({
-						message : "Data not found."
+						message : "Data not found. cuk"
 					})
 				}
 			}
@@ -204,6 +225,39 @@ exports.searchByTitle = function(req, res, next){
 						message : "Data not found."
 					})
 				}
+			}
+		}
+	)
+}
+
+exports.noteByCategory = function(req, res) {
+
+	const idCategory	= req.params.idCategory || '';
+
+	connection.query(
+		`SELECT count(*) as total from note where category='${idCategory}'`,
+		function(error, rows, field) {
+			if(error) {
+				throw error;
+			} else {
+
+				const total 		= rows[0].total;
+				const totalPage		= Math.ceil(total/100);
+				connection.query(
+					`SELECT note.idNote, note.title, note.note, note.time, note.category as idCategory, category.category  FROM note LEFT JOIN category ON note.category=category.id WHERE note.category='${idCategory}' LIMIT 100`,
+					function(error, rowss, field){
+							if (rows != "") {
+								return res.send ({
+									data 		: rowss,
+									totalPage	: 1
+								})	
+							} else {
+								return res.send ({
+									message : "Data not found"
+								})
+							}
+						}
+					)
 			}
 		}
 	)

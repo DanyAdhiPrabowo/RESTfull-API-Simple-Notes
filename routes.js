@@ -9,7 +9,7 @@ module.exports = function(app){
 
 	// GET
 	app.get('/notes', note.getNotes);
-	app.get('/notes/:id', note.noteById);
+	app.get('/notes/:idCategory', note.noteByCategory);
 	// POST
 	app.post('/notes', note.createNote);
 	// PATCH

@@ -25,22 +25,31 @@ exports.getCategories = function(req, res){
 exports.createCategory 	= function(req, res){
 
 	const category		= req.body.category;
+	const icon		= req.body.icon;
 
 	if(!category){
 		res.status(400).send('Category is require');
 	}else{
 		connection.query(
-			`Insert into category set category=?`,
-			[category],
+			`Insert into category set category=?, icon=?`,
+			[category, icon],
 			function(error, rows, field){
 				if(error){
 					throw error;
 				}else{
-					return res.send({
-						error:false,
-						data: rows,
-						message: "Data has been saved"
-					})
+					connection.query(
+						`SELECT * FROM category ORDER BY id DESC limit 1`, function(error, rows, field){
+							if(error){
+								console.log(error);
+							}else{
+								return res.send({
+									data: rows,
+									message: "Data has been saved"
+								})
+							}
+						}
+						
+					)
 				}
 			}
 		)
@@ -100,18 +109,58 @@ exports.deleteCategory = function(req, res, next){
 			if(error){
 				throw error;
 			}else{
-				if(rows.affectedRows != ""){
-					return res.send({
-						data:rows,
-						message:'Data has been delete'
-					})
-				}else{
-					return res.status(400).send({message:"Id not valid."})
-				}
+				connection.query(
+					`UPDATE note set category=0 where category='${id}'`,
+					function(error, rowss, field){
+						if(error){
+							console.log(error);
+						}else{
+							if(rows.affectedRows != ""){
+								return res.send({
+									data 	: rows,
+									message : 'Data has been delete'
+								})
+							}else{
+								return res.status(400).send({message:"Id not valid."})
+							}
+						}
+					}
+				)
 			}
 		}
 	)
 }
+
+
+
+// exports.deleteCategory = function(req, res, next){
+
+// 	const id = req.params.id;
+
+// 	connection.query(
+// 		`Delete from category where id=?`,
+// 		[id],
+// 		function(error, rows, field){
+// 			if(error){
+// 				throw error;
+// 			}else{
+// 				if(rows.affectedRows != ""){
+// 					return res.send({
+// 						data 	: rows,
+// 						message : 'Data has been delete'
+// 					})
+// 				}else{
+// 					return res.status(400).send({message:"Id not valid."})
+// 				}
+// 			}
+// 		}
+// 	)
+// }
+
+
+
+
+
 
 
 
